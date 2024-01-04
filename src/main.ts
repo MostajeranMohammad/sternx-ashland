@@ -2,16 +2,19 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
+  app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
+
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
     options: {
       urls: [
-        `${configService.get('RABBIT_MQ_HOST')}:${configService.get(
+        `amqp://${configService.get('RABBIT_MQ_HOST')}:${configService.get(
           'RABBIT_MQ_PORT',
         )}`,
       ],
@@ -21,6 +24,7 @@ async function bootstrap() {
       },
     },
   });
+
   await app.startAllMicroservices();
 }
 bootstrap();
