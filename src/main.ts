@@ -11,17 +11,13 @@ async function bootstrap() {
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 
   app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.RMQ,
+    transport: Transport.NATS,
     options: {
-      urls: [
-        `amqp://${configService.get('RABBIT_MQ_HOST')}:${configService.get(
-          'RABBIT_MQ_PORT',
+      servers: [
+        `nats://${configService.get('NATS_HOST')}:${configService.get(
+          'NATS_PORT',
         )}`,
       ],
-      queue: configService.get('RABBIT_MQ_LOGS_QUEUE_NAME'),
-      queueOptions: {
-        durable: false,
-      },
     },
   });
 

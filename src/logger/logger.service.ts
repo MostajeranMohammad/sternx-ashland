@@ -7,13 +7,9 @@ export class LoggerProvider {
   constructor(
     @Inject(WINSTON_MODULE_NEST_PROVIDER)
     private readonly logger: LoggerService,
-  ) {
-    setInterval(() => {
-      this.logger.log('Logger is working');
-    }, 5000);
-  }
+  ) {}
 
-  async saveLogs(data: Log) {
-    this.logger.log(data);
+  saveLogs(data: Log) {
+    this.logger.log('log received from gallatin', data);
   }
 }
